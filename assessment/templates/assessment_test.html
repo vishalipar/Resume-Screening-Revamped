@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ test.title }} - Instructions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-50/50 dark:bg-slate-950 min-h-screen text-slate-800 dark:text-slate-100 p-4 sm:p-8 relative overflow-hidden transition-colors duration-300">
+    
+    <!-- Theme Toggle floating button -->
+    <div class="absolute top-6 right-6 z-20">
+        <button id="themeToggle" class="p-3 bg-white/70 dark:bg-slate-900/70 border border-slate-200/50 dark:border-slate-800/80 backdrop-blur-md rounded-2xl text-slate-650 dark:text-slate-350 hover:text-slate-950 dark:hover:text-slate-100 hover:shadow-md transition-all duration-200 cursor-pointer">
+            <!-- Sun Icon (visible in dark mode) -->
+            <svg id="themeSun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M14 12a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <!-- Moon Icon (visible in light mode) -->
+            <svg id="themeMoon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+    </div>
+
+    <!-- Decorative background elements -->
+    <div class="absolute w-[500px] h-[500px] rounded-full bg-blue-400/10 dark:bg-blue-500/5 blur-[90px] -top-40 -left-40 pointer-events-none float-animation"></div>
+    <div class="absolute w-[400px] h-[400px] rounded-full bg-indigo-400/10 dark:bg-indigo-500/5 blur-[90px] -bottom-20 -right-20 pointer-events-none float-animation" style="animation-delay: -3s;"></div>
+
+    <div class="max-w-3xl mx-auto mt-12 bg-white/75 dark:bg-slate-900/75 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/80 p-8 rounded-3xl shadow-xl z-10 transition-all duration-300 relative">
+        <!-- Header -->
+        <div class="border-b border-slate-150 dark:border-slate-800/60 pb-5 mb-6">
+            <h1 class="text-3xl font-extrabold bg-gradient-to-r from-blue-700 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent tracking-tight">
+                {{ test.title }}
+            </h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1.5">
+                Please read the instructions carefully before starting the test.
+            </p>
+        </div>
+
+        <!-- Test Details -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="p-4 bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100/30 dark:border-blue-900/30 rounded-2xl">
+                <p class="text-xs font-semibold text-blue-600/80 dark:text-blue-400/80 uppercase tracking-wider">Duration</p>
+                <p class="text-xl font-bold text-slate-800 dark:text-slate-100 mt-1">{{ test.duration }} mins</p>
+            </div>
+            <div class="p-4 bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100/30 dark:border-emerald-900/30 rounded-2xl">
+                <p class="text-xs font-semibold text-emerald-600/80 dark:text-emerald-400/80 uppercase tracking-wider">Passing Score</p>
+                <p class="text-xl font-bold text-slate-800 dark:text-slate-100 mt-1">{{ test.passing_score }}%</p>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="mb-6">
+            <h2 class="text-lg font-bold text-slate-850 dark:text-slate-200 mb-3">Instructions</h2>
+            <ul class="list-disc pl-5 space-y-2.5 text-slate-650 dark:text-slate-350 text-sm leading-relaxed">
+                <li>This test contains multiple-choice questions.</li>
+                <li>Each question has only one correct answer.</li>
+                <li>You cannot pause the test once started.</li>
+                <li>Do not refresh or close the browser during the test.</li>
+                <li>The test will auto-submit when the time ends.</li>
+                <li>Ensure a stable internet connection.</li>
+            </ul>
+        </div>
+
+        <!-- Candidate Info (Optional) -->
+        <div class="mb-6 p-4 bg-amber-50/50 dark:bg-amber-950/15 border border-amber-200/40 dark:border-amber-900/30 rounded-2xl">
+            <p class="text-xs font-medium text-amber-700 dark:text-amber-400">
+                You are attempting this test as:
+            </p>
+            <p class="font-bold text-slate-800 dark:text-slate-100 mt-0.5">{{ attempt.email }}</p>
+        </div>
+        
+        <div class="mb-6 p-4 bg-slate-50 dark:bg-slate-950/30 border border-slate-200/50 dark:border-slate-800/80 rounded-2xl text-center">
+            <p class="text-xs text-slate-500 dark:text-slate-400">Test starts at: <span class="font-semibold text-slate-700 dark:text-slate-300">{{ start_time }}</span></p>
+            <h1 id="countdown" class="text-xl font-extrabold text-rose-600 dark:text-rose-450 mt-2 tracking-tight"></h1>
+        </div>
+
+        <!-- Start Button -->
+        <div class="flex justify-end">
+            <form id="startForm" method="POST" action="{% url 'start_test' attempt.token %}">
+                {% csrf_token %}
+                <button id="startBtn" type="submit" disabled
+                    class="px-6 py-3 bg-slate-200 dark:bg-slate-800 text-slate-550 dark:text-slate-400 font-bold rounded-xl cursor-not-allowed border-0 transition-all duration-200 shadow-sm">
+                    Start Test
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Init theme
+        const themeSun = document.getElementById('themeSun');
+        const themeMoon = document.getElementById('themeMoon');
+        const currentTheme = localStorage.getItem('theme');
+        
+        function applyTheme(theme) {
+            if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                themeSun.classList.remove('hidden');
+                themeMoon.classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                themeSun.classList.add('hidden');
+                themeMoon.classList.remove('hidden');
+            }
+        }
+        
+        applyTheme(currentTheme);
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                themeSun.classList.add('hidden');
+                themeMoon.classList.remove('hidden');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                themeSun.classList.remove('hidden');
+                themeMoon.classList.add('hidden');
+            }
+        });
+    </script>
+
+    <script>
+        const startTime = new Date("{{ start_time|date:'Y-m-d H:i:s' }}").getTime();
+        let now = new Date().getTime();
+
+        let timeLeft = Math.floor((startTime - now) / 1000);
+
+        const countdownEl = document.getElementById("countdown");
+        const startBtn = document.getElementById("startBtn");
+
+        function startCountdown(){
+
+            const interval = setInterval(() => {
+
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    enableStart();
+                    return;
+                }
+
+                let h = Math.floor(timeLeft / 3600);
+                let m = Math.floor((timeLeft % 3600) / 60);
+                let s = timeLeft % 60;
+
+                countdownEl.innerText = `${h}h ${m}m ${s}s`;
+
+                timeLeft--;
+
+            }, 1000);
+        }
+
+        function enableStart(){
+            countdownEl.innerText = "Test is now available!";
+
+            startBtn.disabled = false;
+
+            startBtn.classList.remove("bg-slate-200", "dark:bg-slate-800", "text-slate-550", "dark:text-slate-400", "cursor-not-allowed");
+            startBtn.classList.add("bg-gradient-to-r", "from-blue-600", "to-indigo-600", "hover:from-blue-700", "hover:to-indigo-700", "text-white", "cursor-pointer", "shadow-lg", "hover:shadow-blue-500/10", "active:scale-[0.98]");
+        }
+
+        startCountdown();
+    </script>
+    <script>
+        document.getElementById("startForm").addEventListener("submit", async function(e){
+        
+            e.preventDefault();
+        
+            try {
+        
+                // ask webcam permission
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: false
+                });
+        
+                // stop webcam immediately
+                stream.getTracks().forEach(track => track.stop());
+        
+                // ✅ permission granted -> start test
+                this.submit();
+        
+            }
+        
+            catch(err){
+        
+                alert(
+                    "Camera permission is mandatory to start the test.\n\n" +
+                    "Please allow camera access."
+                );
+            }
+        
+        });
+        
+    </script>
+
+</body>
+</html>

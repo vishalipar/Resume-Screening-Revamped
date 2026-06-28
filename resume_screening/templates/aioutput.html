@@ -1,0 +1,19 @@
+{% extends "screening.html" %}
+
+{% block title %}AI Resume Screening{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center h-[65vh]">
+    <div class="flex flex-col items-center justify-center text-center max-w-md p-8 bg-white/60 dark:bg-slate-900/50 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/60 rounded-3xl shadow-xl transition-all duration-300">
+        <div class="bg-gradient-to-br from-blue-500 to-indigo-500 text-white p-4.5 rounded-2xl shadow-lg shadow-blue-500/10 mb-5 animate-pulse-slow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-dashed"><path d="M5 3a2 2 0 0 0-2 2"/><path d="M19 3a2 2 0 0 1 2 2"/><path d="M21 19a2 2 0 0 1-2 2"/><path d="M5 21a2 2 0 0 1-2-2"/><path d="M9 3h1"/><path d="M14 3h1"/><path d="M3 9v1"/><path d="M21 9v1"/><path d="M3 14v1"/><path d="M21 14v1"/><path d="M9 21h3"/><path d="M14 21h1"/><path d="M21 19a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="flex flex-col items-center gap-1.5">
+            <h3 class="text-xl font-bold text-slate-850 dark:text-slate-100">Start Screening Resumes</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 max-w-[280px]">
+                Click the chat assistant button in the bottom-right corner to start a conversation, upload resumes, and view match results.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ test.title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+        @keyframes float-blob-1 {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -45px) scale(1.05); }
+            66% { transform: translate(-25px, 25px) scale(0.95); }
+        }
+        @keyframes float-blob-2 {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(-40px, 40px) scale(1.1); }
+        }
+        .animate-blob-1 {
+            animation: float-blob-1 25s infinite ease-in-out;
+        }
+        .animate-blob-2 {
+            animation: float-blob-2 20s infinite ease-in-out;
+        }
+        
+        .gradient-border-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .dark .gradient-border-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .gradient-border-card::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(99, 102, 241, 0.15));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .dark .gradient-border-card::before {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.22), rgba(99, 102, 241, 0.22));
+        }
+        .gradient-border-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px -10px rgba(0, 0, 0, 0.05);
+        }
+        .dark .gradient-border-card:hover {
+            box-shadow: 0 16px 30px -10px rgba(0, 0, 0, 0.35);
+        }
+        .gradient-border-card:hover::before {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.65), rgba(99, 102, 241, 0.65));
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50/50 dark:bg-slate-950 min-h-screen text-slate-800 dark:text-slate-100 p-4 sm:p-8 relative overflow-x-hidden transition-colors duration-300">
+    
+    <!-- Theme Toggle floating button -->
+    <div class="absolute top-6 right-6 z-20">
+        <button id="themeToggle" class="p-3 bg-white/70 dark:bg-slate-900/70 border border-slate-200/50 dark:border-slate-800/80 backdrop-blur-md rounded-2xl text-slate-655 dark:text-slate-350 hover:text-slate-955 dark:hover:text-slate-100 hover:shadow-md transition-all duration-200 cursor-pointer">
+            <!-- Sun Icon (visible in dark mode) -->
+            <svg id="themeSun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M14 12a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <!-- Moon Icon (visible in light mode) -->
+            <svg id="themeMoon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+    </div>
+
+    <!-- Decorative background elements -->
+    <div class="absolute w-[500px] h-[500px] rounded-full bg-blue-400/10 dark:bg-blue-500/5 blur-[90px] -top-40 -left-40 pointer-events-none animate-blob-1"></div>
+    <div class="absolute w-[400px] h-[400px] rounded-full bg-indigo-400/10 dark:bg-indigo-500/5 blur-[90px] -bottom-20 -right-20 pointer-events-none animate-blob-2"></div>
+
+<div class="max-w-4xl mx-auto my-10 gradient-border-card p-8 rounded-3xl z-10 shadow-xl relative">
+    
+    <div class="gradient-border-card mb-6 p-5 rounded-2xl shadow-sm">
+        <div class="flex justify-between items-center mb-3">
+            <h3 class="font-bold text-slate-850 dark:text-slate-200 text-sm flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
+                AI Proctoring Camera
+            </h3>
+    
+            <span id="warningCount"
+                class="text-xs font-bold bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 px-3 py-1 rounded-lg border border-rose-100/50 dark:border-rose-900/30">
+                Warnings: 0
+            </span>
+        </div>
+    
+        <video id="video"
+            autoplay
+            muted
+            class="w-64 h-48 rounded-xl border border-slate-200 dark:border-slate-800 object-cover bg-slate-950">
+        </video>
+    
+        <p id="warningMessage" class="mt-3 text-rose-650 dark:text-rose-455 font-semibold text-sm leading-relaxed"></p>
+    </div>
+
+    <!-- Header -->
+    <div class="mb-6 p-6 bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100/30 dark:border-blue-900/30 rounded-2xl w-full">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 w-full border-b border-slate-200/50 dark:border-slate-800/60 pb-4 mb-6">
+            <h2 class="text-2xl font-extrabold text-slate-850 dark:text-slate-100 tracking-tight">{{ test.title }}</h2>
+            <div class="text-rose-600 dark:text-rose-400 font-extrabold text-xl flex items-center gap-1.5 bg-rose-50/80 dark:bg-rose-950/20 border border-rose-100/50 dark:border-rose-900/30 px-4 py-1.5 rounded-xl shadow-sm">
+                ⏱ <span id="timer"></span>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-650 dark:text-slate-350">
+            <p><b>Candidate Email:</b> <span class="text-slate-800 dark:text-slate-200">{{ attempt.email }}</span></p>
+            <p><b>Total Questions:</b> <span class="text-slate-800 dark:text-slate-200">{{ questions|length }}</span></p>
+            <p><b>Total Marks:</b> <span class="text-slate-800 dark:text-slate-200">{{ total_marks }}</span></p>
+            <p><b>Passing Score:</b> <span class="text-slate-800 dark:text-slate-200">{{ test.passing_score }}%</span></p>
+            <p><b>Duration:</b> <span class="text-slate-800 dark:text-slate-200">{{ test.duration }} minutes</span></p>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <form id="testForm" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="auto_submit" id="autoSubmitField" value="false">
+        {% for q in questions %}
+        <div class="mb-6 p-5 border border-slate-200/50 dark:border-slate-800/80 rounded-2xl bg-slate-50/50 dark:bg-slate-950/20 shadow-sm transition-all duration-300">
+            <div class="flex justify-between items-start gap-4 mb-3">
+                <p class="font-bold text-slate-800 dark:text-slate-100 text-base leading-snug">
+                    {{ forloop.counter }}. {{ q.question }}
+                </p>
+                <span class="text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 rounded-lg border border-emerald-100/50 dark:border-emerald-900/30 flex-shrink-0">
+                    {{ q.marks }} Marks
+                </span>
+            </div>
+
+            <div class="mt-4 space-y-2">
+                {% if q.options %}
+                {% for opt in q.options %}
+                    <label class="flex items-center gap-3 p-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 hover:border-blue-400 dark:hover:border-blue-500 rounded-xl cursor-pointer hover:bg-blue-50/30 dark:hover:bg-slate-900 transition-all duration-150 select-none">
+                        <input type="radio" name="q_{{ q.id }}" value="{{ opt }}" class="w-4 h-4 text-blue-650 dark:text-blue-500 bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700 focus:ring-blue-500">
+                        <span class="text-sm text-slate-700 dark:text-slate-300">{{ opt }}</span>
+                    </label>
+                {% endfor %}
+                {% else %}
+                <textarea name="q_{{ q.id }}" class="w-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 rounded-xl p-3.5 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-500/5 transition-all text-sm min-h-[120px] placeholder-slate-400" placeholder="Write your answer here..."></textarea>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Submit -->
+        <div class="text-center mt-8">
+            <button id="submitBtn" type="submit"
+                class="px-8 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:shadow-blue-500/10 active:scale-[0.98] transition-all duration-200 text-sm cursor-pointer border-0">
+                Submit Test
+            </button>
+        </div>
+    </form>
+</div>
+
+    <script>
+        // Init theme
+        const themeSun = document.getElementById('themeSun');
+        const themeMoon = document.getElementById('themeMoon');
+        const currentTheme = localStorage.getItem('theme');
+        
+        function applyTheme(theme) {
+            if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                themeSun.classList.remove('hidden');
+                themeMoon.classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                themeSun.classList.add('hidden');
+                themeMoon.classList.remove('hidden');
+            }
+        }
+        
+        applyTheme(currentTheme);
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                themeSun.classList.add('hidden');
+                themeMoon.classList.remove('hidden');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                themeSun.classList.remove('hidden');
+                themeMoon.classList.add('hidden');
+            }
+        });
+    </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    
+        let timeLeft = {{ remaining_seconds|default:0 }};
+        const timerDisplay = document.getElementById("timer");
+        const form = document.getElementById("testForm");
+        const submitBtn = document.getElementById("submitBtn");
+    
+        let interval;
+        let isSubmitting = false;
+    
+        function startTimer() {
+            let m = Math.floor(timeLeft / 60);
+            let s = timeLeft % 60;
+            timerDisplay.innerText = m + ":" + (s < 10 ? "0"+s : s);
+    
+            interval = setInterval(() => {
+                let m = Math.floor(timeLeft / 60);
+                let s = timeLeft % 60;
+    
+                timerDisplay.innerText = m + ":" + (s < 10 ? "0"+s : s);
+    
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    isSubmitting = true;
+                    document.getElementById("autoSubmitField").value = "true";
+                    form.submit();
+                    return;
+                }
+    
+                timeLeft--;
+            }, 1000);
+        }
+    
+        form.addEventListener("submit", function(){
+            clearInterval(interval);
+            submitBtn.disabled = true;
+            isSubmitting = true;   // ✅ prevent alert
+        });
+    
+        // ✅ only show warning if NOT submitting
+        window.onbeforeunload = function () {
+            if (!isSubmitting) {
+                return "Changes you made may not be saved";
+            }
+        };
+        
+        let tabSwitchCount = 0;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                tabSwitchCount++;
+                alert("Warning: Tab switching detected!");
+                if (tabSwitchCount >= 3) {
+                    alert("Test auto-submitted due to multiple tab switches.");
+                    document.querySelector("form").submit();
+                }
+            }
+        });
+        
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.go(1);
+        };
+    
+        startTimer();
+    });
+</script>
+    <script>
+        const video = document.getElementById("video");
+        const warningMessage = document.getElementById("warningMessage");
+        const warningCountEl = document.getElementById("warningCount");
+    
+        let warnings = 0;
+        let faceMissingSeconds = 0;
+    
+        // Open webcam
+        async function startWebcam() {
+ 
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: false
+                });
+ 
+                video.srcObject = stream;
+                return true;
+ 
+            } catch (err) {
+ 
+                alert(
+                    "Webcam access is required.\n\n" +
+                    "Please allow camera permission from browser settings and refresh the page."
+                );
+ 
+                // disable test
+                document.getElementById("submitBtn").disabled = true;
+ 
+                return false;
+            }
+        }
+    
+        // Load AI model
+        async function loadModels() {
+            await faceapi.nets.tinyFaceDetector.loadFromUri('/static/models');
+        }
+    
+        // Detect face
+        async function detectFace() {
+    
+            setInterval(async () => {
+    
+                const detection = await faceapi.detectSingleFace(
+                    video,
+                    new faceapi.TinyFaceDetectorOptions()
+                );
+    
+                // No face detected
+                if (!detection) {
+                    faceMissingSeconds++;
+    
+                    warningMessage.innerText =
+                        "Face not detected. Please stay in front of camera.";
+    
+                    // every 5 sec no face => warning
+                    if (faceMissingSeconds >= 5) {
+                        warnings++;
+    
+                        warningCountEl.innerText =
+                            `Warnings: ${warnings}`;
+    
+                        faceMissingSeconds = 0;
+                    }
+    
+                    // auto submit after 3 warnings
+                    if (warnings >= 3) {
+                        alert("Too many warnings. Test auto-submitted.");
+                        document.getElementById("testForm").submit();
+                    }
+                }
+    
+                // Face detected
+                else {
+                    faceMissingSeconds = 0;
+                    warningMessage.innerText = "";
+                }
+    
+            }, 1000);
+        }
+    
+        // Start everything ONLY after page loads
+        window.addEventListener("load", async () => {
+            const webcamStarted = await startWebcam();
+ 
+            if (webcamStarted) {
+                await loadModels();
+                detectFace();
+            }
+        });
+    </script>
+</body>
+</html>

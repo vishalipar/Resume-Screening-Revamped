@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50/50 dark:bg-slate-950 min-h-screen text-slate-800 dark:text-slate-100 flex items-center justify-center p-4 relative overflow-hidden transition-colors duration-300">
+    
+    <!-- Theme Toggle floating button -->
+    <div class="absolute top-6 right-6 z-20">
+        <button id="themeToggle" class="p-3 bg-white/70 dark:bg-slate-900/70 border border-slate-200/50 dark:border-slate-800/80 backdrop-blur-md rounded-2xl text-slate-650 dark:text-slate-350 hover:text-slate-950 dark:hover:text-slate-100 hover:shadow-md transition-all duration-200 cursor-pointer">
+            <!-- Sun Icon (visible in dark mode) -->
+            <svg id="themeSun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M14 12a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <!-- Moon Icon (visible in light mode) -->
+            <svg id="themeMoon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+    </div>
+
+    <!-- Decorative background elements -->
+    <div class="absolute w-[500px] h-[500px] rounded-full bg-blue-400/10 dark:bg-blue-500/5 blur-[90px] -top-40 -left-40 pointer-events-none float-animation"></div>
+    <div class="absolute w-[400px] h-[400px] rounded-full bg-indigo-400/10 dark:bg-indigo-500/5 blur-[90px] -bottom-20 -right-20 pointer-events-none float-animation" style="animation-delay: -3s;"></div>
+
+    <div class="bg-white/75 dark:bg-slate-900/75 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/80 p-10 rounded-3xl shadow-xl z-10 max-w-lg w-full text-center transition-all duration-300 hover:shadow-2xl">
+        <h1 class="text-2xl font-extrabold text-slate-850 dark:text-slate-100 tracking-tight mb-4">
+            Notification
+        </h1>
+        <p class="{% if 'expired' in message %}text-rose-600 dark:text-rose-400 {% else %}text-slate-650 dark:text-slate-350 {% endif %} text-lg leading-relaxed font-medium">
+            {{ message }}
+        </p>
+        {% if not 'expired' in message %}
+        <a href="{% url 'assessment_test' attempt.token %}"
+           class="inline-block mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl hover:shadow-blue-500/10 active:scale-[0.98] transition-all duration-200 text-sm cursor-pointer border-0">
+            Go Home
+        </a>
+        {% endif %}
+    </div>
+
+    <script>
+        // Init theme
+        const themeSun = document.getElementById('themeSun');
+        const themeMoon = document.getElementById('themeMoon');
+        const currentTheme = localStorage.getItem('theme');
+        
+        function applyTheme(theme) {
+            if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                themeSun.classList.remove('hidden');
+                themeMoon.classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                themeSun.classList.add('hidden');
+                themeMoon.classList.remove('hidden');
+            }
+        }
+        
+        applyTheme(currentTheme);
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                themeSun.classList.add('hidden');
+                themeMoon.classList.remove('hidden');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                themeSun.classList.remove('hidden');
+                themeMoon.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

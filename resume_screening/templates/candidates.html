@@ -1,0 +1,338 @@
+{% extends "screening.html" %}
+
+{% block title %}All Candidates{% endblock %}
+
+{% block content %}
+<div class="p-8 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <p class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">Candidates Shortlist</p>
+        
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+            <!-- Search bar -->
+            <div class="flex items-center gap-2 pl-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/5 transition-all w-full sm:w-64">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                <input type="search" name="search" placeholder="Search candidates..." class="text-sm p-2 w-full bg-transparent outline-none border-0 text-slate-850 dark:text-slate-150 placeholder-slate-450">
+            </div>
+            
+            <!-- Filters -->
+            <div class="filters flex items-center p-1 bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200/20 dark:border-slate-700/20 rounded-xl text-xs font-semibold">
+                <button onclick="filterByScore('all')" class="px-4 py-2 rounded-lg bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 shadow-sm transition-all cursor-pointer border-0">
+                    All
+                </button>
+                <button onclick="filterByScore(80,100)" class="px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all cursor-pointer border-0 bg-transparent">
+                    Shortlisted
+                </button>
+                <button onclick="filterByScore(0,79)" class="px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all cursor-pointer border-0 bg-transparent">
+                    Review
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    {% if candidates %}
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-6 border-b border-slate-100 dark:border-slate-800/60 pb-6">
+        <div class="flex items-center gap-2">
+            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Filter by Job Role:</label>
+            <select id="job-filter" onchange="filterByJob()" 
+                class="px-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/5 transition-all text-sm text-slate-700 dark:text-slate-350">
+                <option value="all" {% if selected_job == 'all' %}selected{% endif %}>All Candidates</option>
+                {% for job in job_roles %}
+                <option value="{{ job.id }}" {% if selected_job|stringformat:"s" == job.id|stringformat:"s" %}selected{% endif %}>
+                    {{ job.title }} ({{ job.experience_required }} yrs)
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <span class="text-sm text-slate-400 dark:text-slate-500 sm:ml-auto">
+            Showing <strong class="text-slate-700 dark:text-slate-300 font-semibold">{{ candidates }}</strong> candidate{{ candidates|pluralize }}
+        </span>
+    </div>
+    
+    <div class="overflow-x-auto -mx-8 px-8">
+        <table class="w-full border-separate border-spacing-y-4">
+            <thead>
+                <tr class="text-slate-400 dark:text-slate-500 text-[11px] font-bold uppercase tracking-wider">
+                    <th class="text-start pb-2 pl-4">Candidate</th>
+                    <th class="text-start pb-2">Role</th>
+                    <th class="text-start pb-2">Match Score</th>
+                    <th class="text-start pb-2">Key Skills</th>
+                    <th class="text-start pb-2">Status</th>
+                    <th class="text-start pb-2 pr-4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr class="bg-slate-50/50 dark:bg-slate-950/20 border border-slate-200/50 dark:border-slate-800/30 hover:bg-white dark:hover:bg-slate-900/40 hover:shadow-md transition-all duration-200 rounded-xl">
+                    <td class="py-4 pl-4 rounded-l-xl">
+                        <div class="flex flex-col">
+                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">{{ user.name }}</span>
+                            <span class="text-xs text-slate-400 dark:text-slate-500">{{ user.email }}</span>
+                        </div>
+                    </td>
+                    <td class="py-4">
+                        {% if user.job_role %}
+                        <span class="px-2.5 py-1 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 rounded-lg text-xs font-semibold border border-blue-100 dark:border-blue-900/30">
+                            {{ user.job_role.title }}
+                        </span>
+                        {% else %}
+                        <span class="text-slate-400 dark:text-slate-550 text-xs">Not assigned</span>
+                        {% endif %}
+                    </td>
+                    <td class="py-4 font-semibold">
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-bold border {% if user.score >= 80 %}text-emerald-700 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-950/30 border-emerald-100 dark:border-emerald-900/30{% else %}text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/30 border-amber-100 dark:border-amber-900/30{% endif %}">
+                            {{ user.score }}%
+                        </span>
+                    </td>
+                    <td class="py-4">
+                        <div class="flex flex-wrap gap-1.5 max-w-xs">
+                            {% for skill in user.skills %}
+                            <span class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-650 dark:text-slate-300 rounded text-[11px] font-medium border border-slate-200/50 dark:border-slate-700/50">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    </td>
+                    <td class="py-4">
+                        {% if user.status %}
+                        <span class="px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 rounded-lg text-xs font-semibold border border-emerald-100 dark:border-emerald-900/30">Shortlisted</span>
+                        {% else %}
+                        <span class="px-2.5 py-1 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 rounded-lg text-xs font-semibold border border-amber-100 dark:border-amber-900/30">Review</span>
+                        {% endif %}
+                    </td>
+                    <td class="py-4 pr-4 rounded-r-xl">
+                        <div class="flex items-center gap-4 text-slate-400 dark:text-slate-500">
+                            <a href="{{ user.resume.url }}" target="_blank" class="hover:text-blue-600 dark:hover:text-blue-400 hover:scale-110 transition-all" title="View Resume">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                            </a>
+                            <span onclick="openEmailModal('{{ user.email }}', '{{ user.name }}')" class="hover:text-blue-600 dark:hover:text-blue-400 hover:scale-110 transition-all cursor-pointer" title="Contact Candidate">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+                            </span>
+                            <span class="hover:text-rose-600 dark:hover:text-rose-400 hover:scale-110 transition-all cursor-pointer" title="Remove" onclick="if(confirm('Delete this user?')) window.location.href = '{% url 'delete_user' user.id %}'">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8">
+        <button onclick="openScheduleModal()" class="w-full sm:w-auto flex gap-2 items-center justify-center text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-sm font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl hover:shadow-blue-500/10 transition-all border-0 cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+            Schedule Interviews
+        </button>
+        <a href="{% url 'export_candidates' %}" class="w-full sm:w-auto flex gap-2 items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 text-sm font-semibold border border-blue-600 dark:border-blue-550 px-8 py-3 rounded-xl transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-to-line"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></svg>
+            Export Results
+        </a>
+    </div>
+    {% else %}
+    <div class="text-center py-16">
+        <svg class="w-16 h-16 text-slate-300 dark:text-slate-750 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+        <p class="text-slate-500 dark:text-slate-400 font-semibold text-lg">No Candidates Found</p>
+        <p class="text-slate-400 dark:text-slate-500 text-sm mt-1">Upload resumes on the dashboard or home page to shortlist candidate profiles.</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Email Modal -->
+<div id="emailModal" class="hidden fixed inset-0 backdrop-blur-sm bg-slate-950/60 flex items-center justify-center z-50 p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-2xl w-full max-w-md shadow-2xl relative text-slate-800 dark:text-slate-100">
+        <button onclick="closeEmailModal()" class="absolute top-4 right-4 w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950 hover:text-rose-600 dark:hover:text-rose-400 flex items-center justify-center text-slate-500 dark:text-slate-400 transition-all font-semibold border-0 cursor-pointer">✕</button>
+        
+        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6">Send Email to Candidate</h3>
+        <form method="post" action="{% url 'send_email' %}" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="candidate_id" id="candidate_id">
+            
+            <div>
+                <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">To Email</label>
+                <input type="text" name="to_email" id="to_email" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/5 transition-all text-sm" readonly>
+            </div>
+            
+            <div>
+                <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Subject</label>
+                <input type="text" name="subject" value="Interview Invitation" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/5 transition-all text-sm">
+            </div>
+            
+            <div>
+                <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Message Body</label>
+                <textarea name="message" id="message" rows="5" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/5 transition-all text-sm resize-none"></textarea>
+            </div>
+            
+            <div class="flex gap-3 pt-2">
+                <button type="submit" class="flex-1 py-2.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl hover:shadow-blue-500/10 active:scale-[0.98] transition-all text-sm border-0 cursor-pointer">
+                    Send Email
+                </button>
+                <button type="button" onclick="closeEmailModal()" class="py-2.5 px-5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold rounded-xl transition-all border-0 cursor-pointer">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Schedule Interview Modal -->
+<div id="scheduleModal" class="hidden fixed inset-0 backdrop-blur-sm bg-slate-950/60 flex items-center justify-center z-50 p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-2xl w-full max-w-xl shadow-2xl relative text-slate-800 dark:text-slate-100 max-h-[90vh] flex flex-col overflow-hidden">
+        <button onclick="closeScheduleModal()" class="absolute top-4 right-4 w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950 hover:text-rose-600 dark:hover:text-rose-400 flex items-center justify-center text-slate-500 dark:text-slate-400 transition-all font-semibold border-0 cursor-pointer">✕</button>
+        
+        <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4 flex-shrink-0">Schedule Interviews</h3>
+        
+        <form method="post" action="{% url 'schedule_interviews' %}" class="space-y-4 flex-1 overflow-y-auto pr-1">
+            {% csrf_token %}
+            <!-- Candidate Selection -->
+            <div>
+                <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Select Candidates</label>
+                <div id="candidatesList" class="space-y-2 max-h-40 overflow-y-auto border border-slate-200 dark:border-slate-850 p-3.5 rounded-xl bg-slate-50/50 dark:bg-slate-950/30">
+                    {% for user in users %}
+                    <div class="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 p-2.5 rounded-lg shadow-sm">
+                        <div class="flex items-center gap-2.5">
+                            <input type="checkbox" name="candidates" value="{{ user.id }}" checked class="w-4 h-4 text-blue-600 border-slate-300 dark:border-slate-700 rounded focus:ring-blue-500 bg-transparent">
+                            <div class="flex flex-col">
+                                <span class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ user.name }}</span>
+                                <span class="text-[10px] text-slate-400 dark:text-slate-500">{{ user.email }}</span>
+                            </div>
+                        </div>
+                        <button type="button" onclick="this.parentElement.remove()" class="text-rose-500 hover:text-rose-700 p-1 bg-transparent border-0 cursor-pointer" title="Remove Candidate">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Interview Date & Time -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Interview Date & Time</label>
+                    <input type="datetime-local" name="interview_datetime" required class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/5 transition-all text-sm">
+                </div>
+                <!-- Email Subject -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Email Subject</label>
+                    <input type="text" name="subject" value="Interview Invitation" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/5 transition-all text-sm">
+                </div>
+            </div>
+            
+            <!-- Email Message -->
+            <div>
+                <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Email Message</label>
+                <textarea name="message" rows="6" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/5 transition-all text-sm resize-none">Dear Candidate,
+
+We are pleased to invite you for an interview for the position you applied for.
+
+Interview Details:
+Date & Time: [Will be filled automatically]
+Mode: [Online/Offline]
+Duration: 45 minutes
+
+Please confirm your availability.
+
+Best regards,
+HR Team</textarea>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex gap-3 pt-2">
+                <button type="submit" class="flex-1 py-2.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl hover:shadow-blue-500/10 active:scale-[0.98] transition-all text-sm border-0 cursor-pointer">
+                    Send Invitations
+                </button>
+                <button type="button" onclick="closeScheduleModal()" class="py-2.5 px-5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold rounded-xl transition-all border-0 cursor-pointer">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openScheduleModal() {
+        document.getElementById('scheduleModal').classList.remove('hidden');
+    }
+    function closeScheduleModal() {
+        document.getElementById('scheduleModal').classList.add('hidden');
+    }
+</script>
+
+{% if messages %}
+  <div id="toast-container" class="fixed bottom-12 right-10 space-y-2">
+    {% for message in messages %}
+      <p class="toast {% if 'error' in message.tags %}bg-red-500 {% else %} bg-green-500{% endif %} text-xl text-white px-4 py-2 rounded shadow">
+        {{ message }}
+      </p>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% comment %} messages transition animation {% endcomment %}
+<style>
+  .toast{
+    opacity:0;
+    transform: translateY(60px);
+    animation: slideInOut 5s ease forwards;
+  }
+  @keyframes slideInOut{
+    0%{opacity:0; transform:translateY(60px);}
+    20%{opacity:1; transform:translateY(0);}
+    80%{opacity:1;}
+    100%{opacity:0; transform:translateY(20px);}
+  }
+</style>
+
+{% comment %} search candidates  {% endcomment %}
+<script>
+    document.querySelector('input[name="search"]').addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll('tbody tr').forEach(row => {
+            const name = row.querySelector('td:first-child span').textContent.toLowerCase();
+            row.style.display = name.includes(query) ? '' : 'none';
+        });
+    });
+</script>
+
+{% comment %} filter candidates {% endcomment %}
+<script>
+    function filterByScore(min, max) {
+        const rows = document.querySelectorAll('tbody tr');
+        
+        rows.forEach(row => {
+            if (min === 'all') {
+                row.style.display = '';
+                return;
+            }
+            
+            // Get score from the score column
+            const scoreText = row.querySelectorAll('td')[2].textContent.trim();
+            const score = parseInt(scoreText.replace('%', ''));
+            
+            if (score >= min && score <= max) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+    function filterByJob() {
+        const select = document.getElementById('job-filter');
+        const jobId = select.value;
+        
+        // Redirect with filter parameter
+        window.location.href = `?job_role=${jobId}`;
+    }
+</script>
+
+<script>
+    function openEmailModal(email, name) {
+        document.getElementById('to_email').value = email;
+        document.getElementById('message').value = `Hi ${name},\n\nWe reviewed your resume and would like to schedule an interview.\nScheduled Date :-\n\nBest regards`;
+        document.getElementById('emailModal').classList.remove('hidden');
+    }
+
+    function closeEmailModal() {
+        document.getElementById('emailModal').classList.add('hidden');
+    }
+</script>
+
+{% endblock %}

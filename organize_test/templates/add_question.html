@@ -1,0 +1,153 @@
+{% extends "screening.html" %}
+
+{% block title %}Create New Question{% endblock %}
+
+{% block content %}
+<div class="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200/50 dark:border-slate-800/80 transition-all duration-300">
+    <div class="flex flex-col gap-2 py-6 px-9 text-slate-100 bg-gradient-to-r from-blue-700 to-indigo-700 dark:from-blue-900 dark:to-indigo-900 rounded-t-2xl">
+        <p class='text-3xl font-bold tracking-tight'>Create New Question</p>
+        <p class="text-slate-200/90 text-sm">Add a new challenge to your assessment question bank</p>
+    </div>
+    <form method='post' action="">
+        {% csrf_token %}
+        <div class="flex flex-col gap-6 py-9 mx-9">
+            <div class="flex flex-col gap-3">
+                <p class='text-sm font-semibold text-slate-700 dark:text-slate-350'>Question Type*</p>
+                <div class="flex justify-between gap-4">
+                    <input type="hidden" name="type" id="question-type-input" value="mcq">
+
+                    <button onclick='showSection("mcq")' type='button' class='question-type-button flex flex-1 items-center justify-center gap-2.5 px-6 py-3.5 text-blue-700 dark:text-blue-400 border-2 border-blue-700 dark:border-blue-500 bg-blue-50 dark:bg-blue-950/30 rounded-xl font-medium transition-all duration-200'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-notebook-pen"><path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"/><path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/></svg>
+                        Multiple Choice (MCQ)
+                    </button>
+                    <button onclick='showSection("coding")' type='button' class='question-type-button flex flex-1 items-center justify-center gap-2.5 px-6 py-3.5 text-slate-750 dark:text-slate-300 border-2 border-slate-200 dark:border-slate-800 rounded-xl font-medium hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-laptop"><path d="M18 5a2 2 0 0 1 2 2v8.526a2 2 0 0 0 .212.897l1.068 2.127a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45l1.068-2.127A2 2 0 0 0 4 15.526V7a2 2 0 0 1 2-2z"/><path d="M20.054 15.987H3.946"/></svg>
+                        Coding Question
+                    </button>
+                    <button onclick='showSection("descriptive")' type='button' class='question-type-button flex flex-1 items-center justify-center gap-2.5 px-6 py-3.5 text-slate-750 dark:text-slate-300 border-2 border-slate-200 dark:border-slate-800 rounded-xl font-medium hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-line"><path d="M13 21h8"/><path d="m15 5 4 4"/><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg>
+                        Descriptive
+                    </button>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2">
+                <p class='text-sm font-semibold text-slate-700 dark:text-slate-350'>Question Text*</p>
+                <textarea name="question" id="" cols="30" rows="4" placeholder='Enter your question here...' class='py-3 px-4 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-500/5 transition-all text-sm' required></textarea>
+            </div>
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="flex flex-col gap-2 flex-1">
+                    <p class='text-sm font-semibold text-slate-700 dark:text-slate-350'>Difficulty Level*</p>
+                    <select name="difficulty" id="" class='w-full px-4 py-3 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-500/5 transition-all text-sm'>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+                <div class="flex flex-col gap-2 flex-1">
+                    <p class='text-sm font-semibold text-slate-700 dark:text-slate-350'>Marks*</p>
+                    <input type="text" name="marks" id="" placeholder='eg., 5' class='w-full px-4 py-3 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-500/5 transition-all text-sm' required>
+                </div>
+            </div>
+            <hr class='border-slate-150 dark:border-slate-800/80 my-2'>
+            <div id='mcq' class="flex flex-col gap-4">
+                <p class='text-base font-bold text-slate-800 dark:text-slate-200'>Answer Options</p>
+                <div class="flex flex-col gap-3">
+                    <div class="flex flex-col gap-2">
+                        <p class='text-sm font-medium text-slate-650 dark:text-slate-350'>Option A *</p>
+                        <div class="flex gap-3 items-center">
+                            <input type="radio" name="correct_answer" value='A' id="radio_a" class='w-5 h-5 text-indigo-600 dark:text-indigo-400 bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700 focus:ring-indigo-500'>
+                            <input name='option_a' type="text" class="flex-1 px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-500/5 transition-all text-sm"
+                            placeholder="Enter option A" required>
+                            <label for="radio_a" class="text-sm text-slate-450 dark:text-slate-400 cursor-pointer select-none">Mark as correct</label>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <p class='text-sm font-medium text-slate-650 dark:text-slate-350'>Option B *</p>
+                        <div class="flex gap-3 items-center">
+                            <input type="radio" name="correct_answer" value='B' id="radio_b" class='w-5 h-5 text-indigo-600 dark:text-indigo-400 bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700 focus:ring-indigo-500'>
+                            <input type="text" name='option_b' class="flex-1 px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-500/5 transition-all text-sm"
+                            placeholder="Enter option B" required>
+                            <label for="radio_b" class="text-sm text-slate-450 dark:text-slate-400 cursor-pointer select-none">Mark as correct</label>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <p class='text-sm font-medium text-slate-650 dark:text-slate-350'>Option C *</p>
+                        <div class="flex gap-3 items-center">
+                            <input type="radio" name="correct_answer" value='C' id="radio_c" class='w-5 h-5 text-indigo-600 dark:text-indigo-400 bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700 focus:ring-indigo-500'>
+                            <input type="text" name='option_c' class="flex-1 px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-500/5 transition-all text-sm"
+                            placeholder="Enter option C" required>
+                            <label for="radio_c" class="text-sm text-slate-450 dark:text-slate-400 cursor-pointer select-none">Mark as correct</label>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <p class='text-sm font-medium text-slate-650 dark:text-slate-350'>Option D *</p>
+                        <div class="flex gap-3 items-center">
+                            <input type="radio" name="correct_answer" value='D' id="radio_d" class='w-5 h-5 text-indigo-600 dark:text-indigo-400 bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700 focus:ring-indigo-500'>
+                            <input type="text" name='option_d' class="flex-1 px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-500/5 transition-all text-sm"
+                            placeholder="Enter option D" required>
+                            <label for="radio_d" class="text-sm text-slate-450 dark:text-slate-400 cursor-pointer select-none">Mark as correct</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="coding" name='' class='hidden flex flex-col gap-4'>
+                <p class='text-base font-bold text-slate-850 dark:text-slate-200'>Coding Details</p>
+                <div class="flex flex-col gap-2">
+                    <p class='text-sm font-medium text-slate-700 dark:text-slate-350'>Expected Solution (Optional)</p>
+                    <textarea name="expected_solution" id="" cols="30" rows="6" placeholder='def reverse_string(s):
+    return s[::-1]' class='p-4 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-500/5 transition-all text-sm font-mono'></textarea>
+                </div>
+            </div>
+            <div id="descriptive" name='' class='hidden flex flex-col gap-4'>
+                <p class='text-base font-bold text-slate-850 dark:text-slate-200'>Answer Guidelines</p>
+                <div class="flex flex-col gap-2">
+                    <p class='text-sm font-medium text-slate-700 dark:text-slate-350'>Sample Answers / Key Points (Optional)</p>
+                    <textarea name="sample_answer" id="" cols="30" rows="6" placeholder='Enter key points that should be covered in the answer...
+Example:
+- List are mutable, tuples are immutabel
+- List use [], tuple use ()
+- Tuple are faster than lists' class='p-4 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-500/5 transition-all text-sm'></textarea>
+                    <p class='text-xs text-slate-400 dark:text-slate-500 mt-1'>These points will help during manual evaluation</p>
+                </div>
+            </div>
+            <hr class='border-slate-150 dark:border-slate-800/80 my-2'>
+            <div class="flex justify-between mt-4">
+                <a href="{% url 'organize_test' %}" class='px-6 py-3 text-slate-600 dark:text-slate-300 font-semibold bg-slate-150 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-all duration-200'>Cancel</a>
+                <div class="flex gap-3">
+                    <button type="button" class='px-6 py-3 text-blue-700 dark:text-blue-450 font-semibold border border-blue-200 dark:border-slate-800 hover:bg-blue-50/50 dark:hover:bg-slate-800 rounded-xl transition-all duration-200 bg-transparent'>Save & Add Another</button>
+                    <button type="submit" class='px-6 py-3 text-white font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-xl shadow-md hover:shadow-lg hover:shadow-blue-500/10 active:scale-[0.98] transition-all duration-200'>Save Question</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    function showSection(type) {
+        const buttons = document.querySelectorAll('.question-type-button');
+        buttons.forEach(btn => {
+            btn.classList.remove('border-blue-700', 'bg-blue-50', 'text-blue-700', 'dark:border-blue-500', 'dark:bg-blue-950/30', 'dark:text-blue-400');
+            btn.classList.add('border-slate-200', 'text-slate-750', 'dark:border-slate-800', 'dark:text-slate-300');
+        });
+        
+        const activeBtn = event.target.closest('button');
+        activeBtn.classList.remove('border-slate-200', 'text-slate-750', 'dark:border-slate-800', 'dark:text-slate-300');
+        activeBtn.classList.add('border-blue-700', 'bg-blue-50', 'text-blue-700', 'dark:border-blue-500', 'dark:bg-blue-950/30', 'dark:text-blue-400');
+        
+        document.getElementById('mcq').classList.add('hidden');
+        document.getElementById('coding').classList.add('hidden');
+        document.getElementById('descriptive').classList.add('hidden');
+        
+        if (type === 'mcq') {
+            document.getElementById('mcq').classList.remove('hidden');
+        } else if (type === 'coding') {
+            document.getElementById('coding').classList.remove('hidden');
+        } else if (type === 'descriptive') {
+            document.getElementById('descriptive').classList.remove('hidden');
+        }
+        
+        document.getElementById('question-type-input').value = type;
+    }
+</script>
+{% endblock %}
