@@ -198,12 +198,13 @@
                 <input type="hidden" name="job_role_id" value="{{ selected_job_id }}">
                 {% endif %}
                 <div class="border-2 border-dashed border-slate-200 dark:border-slate-800 hover:border-blue-400 dark:hover:border-blue-500 bg-slate-50/50 dark:bg-slate-950/30 rounded-2xl p-6 text-center transition-all relative">
-                    <input type="file" name="resume_files" accept=".pdf,.docx" multiple required
+                    <input id='resumeInput' type="file" name="resume_files" accept=".pdf,.docx" multiple required
                         class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                     <svg class="w-8 h-8 text-slate-400 dark:text-slate-500 mx-auto mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">Drag resume files here or browse</p>
                     <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Supports PDF or DOCX format</p>
                 </div>
+                <div id="resumePreview" class="mt-4 space-y-2"></div>
                 <button class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] border-0 cursor-pointer" type="submit">
                     Screen Resumes
                 </button>
@@ -275,4 +276,47 @@
         }
     }
 </script>
+<script>
+    const resumeInput = document.getElementById("resumeInput");
+    const preview = document.getElementById("resumePreview");
+    
+    resumeInput.addEventListener("change", function () {
+        preview.innerHTML = "";
+    
+        if (this.files.length === 0) return;
+    
+        Array.from(this.files).forEach(file => {
+    
+            const item = document.createElement("div");
+    
+            item.className =
+                "flex items-center justify-between px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900";
+    
+            item.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M7 7V3h8l4 4v14H7z"/>
+                    </svg>
+    
+                    <div>
+                        <p class="text-sm font-medium text-slate-800 dark:text-slate-100">
+                            ${file.name}
+                        </p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">
+                            ${(file.size / 1024).toFixed(1)} KB
+                        </p>
+                    </div>
+                </div>
+            `;
+    
+            preview.appendChild(item);
+        });
+    });
+    </script>
 {% endblock %}
