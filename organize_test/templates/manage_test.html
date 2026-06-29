@@ -42,14 +42,14 @@
             <input type="number" value="{{ q.marks|default:2 }}" class="marks-input w-12 text-sm text-slate-800 dark:text-slate-100 border border-slate-200/30 dark:border-slate-800/50 rounded-lg px-2 py-1 bg-slate-50 dark:bg-slate-950/20 font-bold pointer-events-none" oninput="updateSummary()" onchange="updateMarks(this, {{ q.id }})" readonly min="1">
         </div>
         
-        <div class="absolute top-20 right-5 flex gap-2 text-slate-450 dark:text-slate-500">
+        <div class="absolute top-20 right-5 flex gap-2 text-slate-500 dark:text-slate-400">
             <button onclick="enableEdit(this)" class="hover:text-blue-600 dark:hover:text-blue-400 hover:scale-105 active:scale-95 transition-all p-1 bg-transparent border-0 cursor-pointer" title="Edit Question">
-                <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                 </svg>
             </button>
             <button onclick="deleteQuestionDB({{ q.id }}, this)" class="hover:text-rose-600 dark:hover:text-rose-400 hover:scale-105 active:scale-95 transition-all p-1 bg-transparent border-0 cursor-pointer" title="Delete Question">
-                <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                 </svg>
             </button>
@@ -58,7 +58,7 @@
         <div class="flex gap-3 text-slate-550 dark:text-slate-400">
             <span class="w-12 text-sm font-semibold">Que.{{ forloop.counter }}.</span>
             <!-- Editable Question -->
-            <textarea readonly class="w-[85%] border-0 bg-transparent font-semibold text-slate-800 dark:text-slate-100 p-2 rounded mb-1 question-input pointer-events-none focus:outline-none resize-none leading-relaxed h-12">{{ q.question }}</textarea>
+            <textarea readonly class="w-[85%] border-0 bg-transparent font-semibold text-slate-800 dark:text-slate-100 bg-white/70 dark:bg-slate-900/70 p-2 rounded mb-1 question-input pointer-events-none focus:outline-none resize-none leading-relaxed h-12">{{ q.question }}</textarea>
         </div>
         <!-- Editable Options -->
         {% if q.options %}
@@ -76,7 +76,7 @@
                         {% endif %}
                     </span>
                     <input type="text" value="{{ opt }}" 
-                    readonly class="p-2 border-0 bg-transparent pointer-events-none focus:outline-none text-slate-750 dark:text-slate-300 text-sm w-[88%]" />
+                    readonly class="p-2 option-input border-0 bg-white/70 dark:bg-slate-900/70 bg-transparent pointer-events-none focus:outline-none text-slate-750 dark:text-slate-300 text-sm w-[88%]" />
                 </p>
                 {% endfor %}
             </div>
@@ -87,7 +87,7 @@
         <div class="flex gap-3 items-center mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/60">
             <span class="text-slate-600 dark:text-slate-400 w-12 text-sm font-semibold">Ans. -</span>
             <input type="text" value="{{ q.answer }}" 
-            readonly class="p-2 text-slate-700 dark:text-slate-300 border-0 bg-transparent pointer-events-none focus:outline-none text-sm w-[85%]" />
+            readonly class="p-2 answer-input text-slate-700 dark:text-slate-300 bg-white/70 dark:bg-slate-900/70 border-0 bg-transparent pointer-events-none focus:outline-none text-sm w-[85%]" />
         </div>
     </div>
     {% endfor %}
@@ -121,7 +121,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
                     </svg>
                     <div>
-                        <p class="font-bold text-sm text-slate-800 dark:text-slate-250">Generate Using AI</p>
+                        <p class="font-bold text-sm text-slate-800 dark:text-slate-400">Generate Using AI</p>
                         <p class="text-[10px] text-slate-400 dark:text-slate-500">Generate questions from the text paragraph</p>
                     </div>
                 </button>
@@ -129,7 +129,7 @@
                 class="w-full text-left px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all flex items-center gap-3 border border-indigo-400/50 dark:border-indigo-800/30 rounded-xl bg-transparent cursor-pointer no-underline">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
                     <div>
-                        <p class="font-bold text-sm text-slate-800 dark:text-slate-250">Create Questions Manually</p>
+                        <p class="font-bold text-sm text-slate-800 dark:text-slate-400">Create Questions Manually</p>
                         <p class="text-[10px] text-slate-400 dark:text-slate-550">Create questions manually with the options</p>
                     </div>
                 </a>
@@ -316,54 +316,71 @@
         questions.forEach((q, index) => {
       
           const optionsHTML = q.options ? q.options.map((opt, i) => {
-      
+
             const label = ["A.", "B.", "C.", "D.", "E."][i] || "";
-      
+        
             return `
-              <p class="flex items-center gap-2">
-                <span class="text-stone-700">${label}</span>
-                <input type="text" value="${opt}" 
-                  class="border p-2 rounded w-[88%] mb-2 option-input" />
-              </p>
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-6 text-slate-700 dark:text-slate-300 font-medium">
+                        ${label}
+                    </span>
+        
+                    <input
+                        type="text"
+                        value="${opt}"
+                        class="option-input w-[88%] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950/20 text-slate-800 dark:text-slate-100 rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
             `;
-          }).join('') : '';
+        }).join('') : '';
       
           const card = `
-            <div class="p-4 mb-3 border rounded-lg bg-white shadow-sm relative question-card">
-              <!-- Buttons -->
-              <div class="absolute top-6 right-5">      
-                <button onclick="deleteQuestion(this)" class="text-red-500">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                  </svg>
-                </button>
-              </div>
-      
-              <!-- Question -->
-              <div class="flex gap-3 text-stone-500">
-                <span class="w-12">Que.${index + 1}.</span>
-                <textarea class="w-[85%] border font-semibold p-2 rounded mb-3 question-input">${q.question}</textarea>
-              </div>
-      
-              <!-- Options -->
-              ${q.options ? `
-              <div class="flex gap-3">
-                <div class="w-6"></div>
-                <div class="w-full">
-                  ${optionsHTML}
-                </div>
-              </div>` : ''}
-      
-              <!-- Answer -->
-              <div class="flex gap-3 items-center">
-                <span class="text-stone-600 w-12">Ans. -</span>
-                <input type="text" value="${q.answer}" 
-                  class="border p-2 text-stone-600 rounded w-[85%] mt-2 answer-input" />
-              </div>
-      
-            </div>
-          `;
+<div class="p-6 pr-16 mb-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 rounded-2xl relative shadow-sm hover:shadow-md transition-all question-card text-slate-800 dark:text-slate-100">
+
+    <!-- Delete Button -->
+    <div class="absolute top-6 right-5">      
+      <button onclick="deleteQuestion(this)" class="text-red-500">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Question -->
+    <div class="flex gap-3">
+        <span class="w-12 font-medium text-slate-600 dark:text-slate-400">
+            Que.${index + 1}.
+        </span>
+
+        <textarea
+            class="w-[85%] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950/20 text-slate-800 dark:text-slate-100 rounded-xl p-2 font-semibold resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 question-input">${q.question}</textarea>
+    </div>
+
+    <!-- Options -->
+    ${q.options ? `
+    <div class="flex gap-3 mt-3">
+        <div class="w-12"></div>
+        <div class="w-full">
+            ${optionsHTML}
+        </div>
+    </div>
+    ` : ''}
+
+    <!-- Answer -->
+    <div class="flex gap-3 items-center mt-4">
+        <span class="w-12 text-slate-600 dark:text-slate-400 font-medium">
+            Ans.
+        </span>
+
+        <input
+            type="text"
+            value="${q.answer}"
+            class="answer-input w-[85%] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950/20 text-slate-800 dark:text-slate-100 rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+
+</div>
+`;
       
           container.innerHTML += card;
         });
