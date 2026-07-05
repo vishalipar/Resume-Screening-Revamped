@@ -3,9 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 import pdfplumber
 import docx
-import spacy
 import re
-from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from .models import UserInfo
 from resume_parser.models import JobRole
@@ -23,10 +21,12 @@ model = None
 
 def load_models():
     global nlp, model
+    import spacy
     if nlp is None:
         nlp = spacy.load("en_core_web_sm")
     
     if model is None:
+        from sentence_transformers import SentenceTransformer
         model = SentenceTransformer('all-MiniLM-L6-v2')
 
 def extract_text_from_pdf(file):
