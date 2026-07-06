@@ -233,23 +233,29 @@ def send_emails(request):
 
     test = newTest.objects.get(id=test_id)
 
-    emails_to_send = []
+    email_tasks = []
     for email in emails:
         attempt = TestAttempt.objects.create(test=test, email=email, scheduled_at=scheduled_time)
-        link = f"http://127.0.0.1:8000/assessment-test/{attempt.token}/"
+        link = f"https://resume-screening-revamped.onrender.com/assessment-test/{attempt.token}/"
         final_message = message.replace(
             "[Will add automatically]",
             link
         )
-        emails_to_send.append((subject, final_message, EMAIL_HOST_USER, [email]))
+        html_content = final_message.replace("\n", "<br>")
+        email_tasks.append((email.strip(), subject, html_content))
 
     from resume_screening.background import run_in_background
     def send_all_emails():
-        for s, msg, sender, recipients in emails_to_send:
+        for email, subject, html_content in email_tasks:
+            from resume_screening.email_service import send_brevo_email
             try:
-                send_mail(s, msg, sender, recipients, fail_silently=False)
-            except Exception:
-                pass
+                send_brevo_email(
+                    to_email=email,
+                    subject=subject,
+                    html_content=html_content
+                )
+            except Exception as e:
+                print(f"Failed to send email to {email}: {e}")
 
     run_in_background(send_all_emails)
 
@@ -275,7 +281,7 @@ def create_attempts(request):
     for email in emails:
         attempt = TestAttempt.objects.create(test=test, email=email, scheduled_at=scheduled_time)
 
-        link = f"http://127.0.0.1:8000/assessment-test/{attempt.token}/"
+        link = f"https://resume-screening-revamped.onrender.com/assessment-test/{attempt.token}/"
 
         attempts.append({
             "email": email,
