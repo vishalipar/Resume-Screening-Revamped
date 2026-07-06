@@ -464,13 +464,20 @@ def send_email_view(request):
         message = request.POST.get('message')
         from .background import run_in_background
         try:
-            run_in_background(
-                send_mail,
+            # run_in_background(
+            #     send_mail,
+            #     subject,
+            #     message,
+            #     "sampleemail811@gmail.com",
+            #     [to_email],
+            #     fail_silently=False
+            # )
+            send_mail(
                 subject,
                 message,
                 "sampleemail811@gmail.com",
                 [to_email],
-                fail_silently=False
+                fail_silently=False,
             )
             messages.success(request, 'Email is being sent in the background.')
         except Exception as e:
