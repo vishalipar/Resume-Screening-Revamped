@@ -468,7 +468,7 @@ def send_email_view(request):
                 send_mail,
                 subject,
                 message,
-                EMAIL_HOST_USER,
+                "sampleemail811@gmail.com",
                 [to_email],
                 fail_silently=False
             )
