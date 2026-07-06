@@ -472,12 +472,19 @@ def send_email_view(request):
             #     [to_email],
             #     fail_silently=False
             # )
-            send_mail(
-                subject,
-                message,
-                "sampleemail811@gmail.com",
-                [to_email],
-                fail_silently=False,
+            
+            from resume_screening.email_service import send_brevo_email
+            # run_in_background(
+            #     send_brevo_email,
+            #     [to_email],
+            #     subject,
+            #     html_content
+            # )
+
+            send_brevo_email(
+                to_email=to_email,
+                subject=subject,
+                html_content=message
             )
             messages.success(request, 'Email is being sent in the background.')
         except Exception as e:
