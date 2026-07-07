@@ -14,14 +14,6 @@ from datetime import datetime
 from django.db.models import Avg
 
 
-model = None
-
-def load_models():
-    global model
-    if model is None:
-        from .embedding_model import model as embedding_model
-        model = embedding_model
-
 def extract_text_from_pdf(file):
     with pdfplumber.open(file) as pdf:
         return "\n".join(page.extract_text() or "" for page in pdf.pages)
@@ -224,11 +216,22 @@ def extract_text(file):
     else:
         return file.read().decode("utf-8")
 
+import requests
+
+API_URL = "https://vishalipar-resume-screening-ml-api.hf.space/match-score/"
+
+
 def match_score(jd_text, resume_text):
-    load_models()
-    jd_vec = model.encode(jd_text)
-    res_vec = model.encode(resume_text)
-    return float(cosine_similarity([jd_vec], [res_vec])[0][0]) * 100
+    response = requests.post(
+        API_URL,
+        json={
+            "jd_text": jd_text,
+            "resume_text": resume_text
+        },
+        timeout=60
+    )
+    response.raise_for_status()
+    return response.json()["score"]
 
 def extract_resume_details(resume_text):
     # Extract email
