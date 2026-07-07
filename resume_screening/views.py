@@ -542,21 +542,33 @@ def schedule_interviews(request):
         candidates = UserInfo.objects.filter(id__in=candidate_ids)
         
         # Prepare emails
-        emails = []
+        email_tasks = []
         for candidate in candidates:
             personalized_message = message.replace('Dear Candidate', f'Dear {candidate.name}')
-            emails.append((
+            html_content = personalized_message.replace("\n", "<br>")
+            email_tasks.append((
+                candidate.email.strip(),
                 subject,
-                personalized_message,
-                EMAIL_HOST_USER,  # From email
-                [candidate.email]
+                html_content
             ))
+            
+        def send_all_emails():
+            for email, subject, html_content in email_tasks:
+                from .email_service import send_brevo_email
+                try:
+                    send_brevo_email(
+                        to_email=email,
+                        subject=subject,
+                        html_content=html_content
+                    )
+                except Exception as e:
+                    pass
         
         # Send emails
         from .background import run_in_background
         try:
-            run_in_background(send_mass_mail, emails, fail_silently=False)
-            messages.success(request, f'Interview invitations are being sent in the background to {len(emails)} candidates!')
+            run_in_background(send_all_emails)
+            messages.success(request, f'Interview invitations are being sent in the background to {len(email_tasks)} candidates!')
         except Exception as e:
             messages.error(request, f'Failed to queue emails: {str(e)}')
         
