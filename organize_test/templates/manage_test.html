@@ -125,14 +125,14 @@
                         <p class="text-[10px] text-slate-400 dark:text-slate-500">Generate questions from the text paragraph</p>
                     </div>
                 </button>
-                <a href='{% url "add_question" %}' 
-                class="w-full text-left px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all flex items-center gap-3 border border-indigo-400/50 dark:border-indigo-800/30 rounded-xl bg-transparent cursor-pointer no-underline">
+                <button disabled 
+                class="w-full text-left px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all flex items-center gap-3 border border-indigo-400/50 dark:border-indigo-800/30 rounded-xl bg-transparent cursor-not-allowed no-underline">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
                     <div>
                         <p class="font-bold text-sm text-slate-800 dark:text-slate-400">Create Questions Manually</p>
                         <p class="text-[10px] text-slate-400 dark:text-slate-550">Create questions manually with the options</p>
                     </div>
-                </a>
+                </button>
             </div>
         </div>
     </div>
