@@ -7,27 +7,20 @@ import re
 from sklearn.metrics.pairwise import cosine_similarity
 from .models import UserInfo
 from resume_parser.models import JobRole
-from django.core.mail import send_mail, send_mass_mail
 from django.contrib import messages
-from resume_project.settings import EMAIL_HOST_USER
 from openpyxl import Workbook
 from django.http import HttpResponse
 from datetime import datetime
 from django.db.models import Avg
 
 
-nlp = None
 model = None
 
 def load_models():
-    global nlp, model
-    import spacy
-    if nlp is None:
-        nlp = spacy.load("en_core_web_sm")
-    
+    global model
     if model is None:
-        from sentence_transformers import SentenceTransformer
-        model = SentenceTransformer('all-MiniLM-L6-v2')
+        from .embedding_model import model as embedding_model
+        model = embedding_model
 
 def extract_text_from_pdf(file):
     with pdfplumber.open(file) as pdf:
@@ -238,9 +231,6 @@ def match_score(jd_text, resume_text):
     return float(cosine_similarity([jd_vec], [res_vec])[0][0]) * 100
 
 def extract_resume_details(resume_text):
-    load_models()
-    doc = nlp(resume_text)
-    
     # Extract email
     email_match = re.search(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', resume_text)
     email = email_match.group(0) if email_match else "Not found"
@@ -464,29 +454,14 @@ def send_email_view(request):
         message = request.POST.get('message')
         from .background import run_in_background
         try:
-            # run_in_background(
-            #     send_mail,
-            #     subject,
-            #     message,
-            #     "sampleemail811@gmail.com",
-            #     [to_email],
-            #     fail_silently=False
-            # )
-            
             from resume_screening.email_service import send_brevo_email
-            # run_in_background(
-            #     send_brevo_email,
-            #     [to_email],
-            #     subject,
-            #     html_content
-            # )
 
             send_brevo_email(
                 to_email=to_email,
                 subject=subject,
                 html_content=message
             )
-            messages.success(request, 'Email is being sent in the background.')
+            messages.success(request, 'Email is being sent.')
         except Exception as e:
             messages.error(request, 'Failed to queue email.')
             
