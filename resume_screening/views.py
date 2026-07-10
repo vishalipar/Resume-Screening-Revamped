@@ -4,7 +4,6 @@ from django.core.files.storage import FileSystemStorage
 import pdfplumber
 import docx
 import re
-from sklearn.metrics.pairwise import cosine_similarity
 from .models import UserInfo
 from resume_parser.models import JobRole
 from django.contrib import messages
@@ -261,6 +260,7 @@ def extract_resume_details(resume_text):
     
 @login_required
 def home(request):
+    request.session['is_candidate'] = False
     job_roles = JobRole.objects.filter(status='active').order_by('-created_at')
     
     context = {
