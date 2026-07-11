@@ -3,15 +3,15 @@
 {% block title %}Manage Test{% endblock %}
 
 {% block content %}
-<div class="bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 mb-8">
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 dark:border-slate-800/60 pb-6 mb-6">
+<div class="bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 p-6 md:p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 mb-8">
+    <div class="flex flex-col sm:flex-row justify-between items-center  border-b border-slate-100 dark:border-slate-800/60 pb-6 mb-6">
         <div>
-            <p class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">Add Questions to Test</p>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Active evaluation: <strong class="text-blue-650 dark:text-blue-400 font-semibold">{{test.title}}</strong></p>
+            <p class="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">Add Questions to Test</p>
+            <p class="text-[12px] md:text-sm text-slate-500 dark:text-slate-400 mt-1">Active evaluation: <strong class="text-blue-650 dark:text-blue-400 font-semibold">{{test.title}}</strong></p>
         </div>
         
-        <div class="flex flex-col items-end mt-4 sm:mt-0 text-slate-800 dark:text-slate-100">
-            <p class="flex flex-col items-end">
+        <div class="flex flex-col items-center md:items-end mt-4 sm:mt-0 text-slate-800 dark:text-slate-100">
+            <p class="flex flex-col items-center md:items-end">
                 <span id="questionCount" class="text-4xl font-extrabold text-blue-600 dark:text-blue-450">0</span>
                 <span class="text-xs text-slate-400 dark:text-slate-550 font-bold uppercase tracking-wider mt-1">Questions Selected</span>
             </p>
@@ -33,16 +33,16 @@
 
 {% if questions %}
     {% for q in questions %}
-    <div class="p-6 mb-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 rounded-2xl relative shadow-sm hover:shadow-md transition-all question-card text-slate-800 dark:text-slate-100" data-id="{{ q.id }}">
+    <div class="p-3 md:p-6 mb-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 rounded-2xl relative shadow-sm hover:shadow-md transition-all question-card text-slate-800 dark:text-slate-100" data-id="{{ q.id }}">
         <!-- Select Question checkbox styled -->
-        <input type="checkbox" class="absolute -left-7 select-question w-4.5 h-4.5 text-blue-600 border-slate-300 dark:border-slate-700 rounded focus:ring-blue-500 bg-transparent" onchange="toggleQuestion(this, {{ q.id }})" {% if q.id in selected_ids %}checked{% endif %}>
+        <input type="checkbox" class="absolute sm:left-1 sm:top-2 lg:-left-7 select-question w-4.5 h-4.5 text-blue-600 border-slate-300 dark:border-slate-700 rounded focus:ring-blue-500 bg-transparent" onchange="toggleQuestion(this, {{ q.id }})" {% if q.id in selected_ids %}checked{% endif %}>
         
-        <div class="absolute top-6 right-5 flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-550">
+        <div class="absolute top-0 md:top-6 right-2 md:right-5 flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-550">
             <span>Marks:</span>
             <input type="number" value="{{ q.marks|default:2 }}" class="marks-input w-12 text-sm text-slate-800 dark:text-slate-100 border border-slate-200/30 dark:border-slate-800/50 rounded-lg px-2 py-1 bg-slate-50 dark:bg-slate-950/20 font-bold pointer-events-none" oninput="updateSummary()" onchange="updateMarks(this, {{ q.id }})" readonly min="1">
         </div>
         
-        <div class="absolute top-20 right-5 flex gap-2 text-slate-500 dark:text-slate-400">
+        <div class="absolute top-9 md:top-20 right-2 md:right-5 flex gap-2 text-slate-500 dark:text-slate-400">
             <button onclick="enableEdit(this)" class="hover:text-blue-600 dark:hover:text-blue-400 hover:scale-105 active:scale-95 transition-all p-1 bg-transparent border-0 cursor-pointer" title="Edit Question">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -55,7 +55,7 @@
             </button>
         </div>
         
-        <div class="flex gap-3 text-slate-550 dark:text-slate-400">
+        <div class="flex gap-0 md:gap-3 text-slate-550 dark:text-slate-400">
             <span class="w-12 text-sm font-semibold">Que.{{ forloop.counter }}.</span>
             <!-- Editable Question -->
             <textarea readonly class="w-[85%] border-0 bg-transparent font-semibold text-slate-800 dark:text-slate-100 bg-white/70 dark:bg-slate-900/70 p-2 rounded mb-1 question-input pointer-events-none focus:outline-none resize-none leading-relaxed h-12">{{ q.question }}</textarea>
@@ -335,10 +335,10 @@
         }).join('') : '';
       
           const card = `
-<div class="p-6 pr-16 mb-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 rounded-2xl relative shadow-sm hover:shadow-md transition-all question-card text-slate-800 dark:text-slate-100">
+<div class="p-3 md:p-6 pr-16 mb-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 rounded-2xl relative shadow-sm hover:shadow-md transition-all question-card text-slate-800 dark:text-slate-100">
 
     <!-- Delete Button -->
-    <div class="absolute top-6 right-5">      
+    <div class="absolute top-2 md:top-6 right-2 md:right-5">      
       <button onclick="deleteQuestion(this)" class="text-red-500">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -348,18 +348,18 @@
     </div>
 
     <!-- Question -->
-    <div class="flex gap-3">
+    <div class="flex gap-1 md:gap-3">
         <span class="w-12 font-medium text-slate-600 dark:text-slate-400">
             Que.${index + 1}.
         </span>
 
         <textarea
-            class="w-[85%] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950/20 text-slate-800 dark:text-slate-100 rounded-xl p-2 font-semibold resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 question-input">${q.question}</textarea>
+            class="w-[90%] md:w-[85%] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950/20 text-slate-800 dark:text-slate-100 rounded-xl p-1 md:p-2 font-semibold resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 question-input">${q.question}</textarea>
     </div>
 
     <!-- Options -->
     ${q.options ? `
-    <div class="flex gap-3 mt-3">
+    <div class="flex gap-2 md:gap-3 mt-3">
         <div class="w-12"></div>
         <div class="w-full">
             ${optionsHTML}
@@ -368,7 +368,7 @@
     ` : ''}
 
     <!-- Answer -->
-    <div class="flex gap-3 items-center mt-4">
+    <div class="flex gap-1 md:gap-3 items-center mt-4">
         <span class="w-12 text-slate-600 dark:text-slate-400 font-medium">
             Ans.
         </span>
@@ -376,7 +376,7 @@
         <input
             type="text"
             value="${q.answer}"
-            class="answer-input w-[85%] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950/20 text-slate-800 dark:text-slate-100 rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            class="answer-input w-[90%] md:w-[85%] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950/20 text-slate-800 dark:text-slate-100 rounded-xl p-1 md:p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
     </div>
 
 </div>
