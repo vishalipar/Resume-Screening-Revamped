@@ -12,6 +12,8 @@ from django.http import HttpResponse
 from datetime import datetime
 from django.db.models import Avg
 
+def information(request):
+    return render(request, 'information.html')
 
 def extract_text_from_pdf(file):
     with pdfplumber.open(file) as pdf:
