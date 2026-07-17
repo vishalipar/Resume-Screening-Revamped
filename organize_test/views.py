@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from .models import newTest, Position, Question, QuestionOption, QuestionModel
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -16,6 +17,7 @@ from django.utils import timezone
 
 # Create your views here.
 
+@never_cache
 @login_required
 def organize_test(request):
     if request.session.get('is_candidate'):
@@ -66,6 +68,7 @@ def organize_test(request):
     }
     return render(request, 'test.html', context)
     
+@never_cache
 @login_required
 def add_question(request):
     if request.method == 'POST':
@@ -118,7 +121,8 @@ def add_question(request):
             )
         
     return render(request, 'add_question.html')
-    
+ 
+@never_cache   
 @login_required
 def manage_test(request, test_id):
     test = newTest.objects.get(id=test_id)
@@ -193,6 +197,7 @@ class UpdateQuestionsAPI(APIView):
 
         return Response({"status": "updated"})
 
+@never_cache
 @login_required
 def toggle_question(request):
     if request.method == "POST":
@@ -209,12 +214,14 @@ def toggle_question(request):
 
         return JsonResponse({"status": "success"})
         
+@never_cache
 @login_required
 def delete_test(request, id):
     if request.method == "POST":
         newTest.objects.filter(id=id).delete()
         return JsonResponse({'status': 'ok'})
-        
+   
+@never_cache     
 @login_required
 def send_emails(request):
     data = json.loads(request.body)
@@ -261,7 +268,7 @@ def send_emails(request):
 
     return JsonResponse({"status": "success"})
         
-        
+@never_cache     
 @login_required
 def create_attempts(request):
     data = json.loads(request.body)
@@ -304,6 +311,7 @@ def submit_test(request):
 
     return HttpResponse("Test submitted")
     
+@never_cache
 @login_required
 def result_api(request, attempt_id):
     attempt = get_object_or_404(TestAttempt, id=attempt_id)

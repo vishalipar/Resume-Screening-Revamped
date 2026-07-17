@@ -1,6 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
+from django.views.decorators.cache import never_cache
+from django.contrib.auth.decorators import login_required
 from .models import JobRole, Resume
 from django.shortcuts import render
 
@@ -42,6 +44,8 @@ class JobRoleView(APIView):
             'title': job.title
         })
         
+@never_cache
+@login_required
 def job_roles_view(request):
     return render(request, 'job_roles.html')
     

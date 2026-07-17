@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from django.core.files.storage import FileSystemStorage
 import pdfplumber
 import docx
@@ -260,6 +261,7 @@ def extract_resume_details(resume_text):
         'skills': found_skills[:5]  # Top 5 skills
     }
     
+@never_cache
 @login_required
 def home(request):
     request.session['is_candidate'] = False
@@ -422,6 +424,7 @@ def home(request):
     
     return render(request, 'home.html', context)  
     
+@never_cache
 @login_required
 def candidates(request):
     # Get filter parameter
@@ -446,11 +449,13 @@ def candidates(request):
     }
     return render(request, 'candidates.html', context)
     
+@never_cache
 @login_required
 def delete_user(request, user_id):
     UserInfo.objects.filter(id = user_id).delete()
     return redirect('candidates')
     
+@never_cache
 @login_required
 def send_email_view(request):
     if request.method == 'POST':
@@ -472,6 +477,7 @@ def send_email_view(request):
             
         return redirect('candidates')
         
+@never_cache
 @login_required
 def export_candidates(request):
     wb = Workbook()
@@ -503,6 +509,7 @@ def export_candidates(request):
     wb.save(response)
     return response
 
+@never_cache
 @login_required
 def schedule_interviews(request):
     if request.method == 'POST':
@@ -553,7 +560,8 @@ def schedule_interviews(request):
             messages.error(request, f'Failed to queue emails: {str(e)}')
         
         return redirect('candidates')
-        
+
+@never_cache        
 @login_required
 def dashboard(request):
     candidates = UserInfo.objects.all().order_by('-score')
