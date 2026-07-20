@@ -14,6 +14,10 @@ from assessment.models import TestAttempt, Answer
 from resume_project.settings import EMAIL_HOST_USER
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
+from rest_framework.exceptions import Throttled
+from rest_framework.throttling import UserRateThrottle
+from rest_framework import status
+
 
 # Create your views here.
 
@@ -137,7 +141,17 @@ def manage_test(request, test_id):
     }
     return render(request, 'manage_test.html', context)
     
+class QuestionGenerationThrottle(UserRateThrottle):
+    rate = '1/min'
+    
 class GenerateQuestionsAPI(APIView):
+    throttle_classes = [QuestionGenerationThrottle]
+
+    def throttled(self, request, wait):
+        raise Throttled(
+            detail="Question generation limit exceeded. Please wait a minute before generating more questions."
+        )
+
     def post(self, request):
         paragraph = request.data.get("paragraph")
         q_type = request.data.get("type")

@@ -4,9 +4,19 @@ from .ai_assistant import AIAssistant
 from .session_manager import get_or_create_state
 from resume_parser.models import JobRole, Resume
 import uuid
+from rest_framework.throttling import UserRateThrottle
+from rest_framework.exceptions import Throttled
+
+class LLMRateThrottle(UserRateThrottle):
+    rate = '7/min'
 
 class ChatView(APIView):
-    
+    throttle_classes = [LLMRateThrottle]
+    def throttled(self, request, wait):
+        raise Throttled(
+            detail="Rate limit exceeded. Please wait a minute before generating another response."
+        )
+        
     def post(self, request):
         user_message = request.data.get('message', '').strip()
         session_id = request.data.get('session_id')

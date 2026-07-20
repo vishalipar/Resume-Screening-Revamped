@@ -267,25 +267,39 @@
     fetch('/test/generate-questions/', {
         method: 'POST',
         headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': getCSRFToken()
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()
         },
         body: JSON.stringify(data)
     })
-    .then(res => res.json())
+    .then(async res => {
+        const data = await res.json();
+    
+        if (res.status === 429) {
+            alert(data.detail);   // <-- DRF returns the message in "detail"
+            return null;
+        }
+    
+        if (!res.ok) {
+            alert("Something went wrong.");
+            return null;
+        }
+    
+        return data;
+    })
     .then(res => {
+        if (!res) return;
+    
         let questions = res.questions;
     
         if (typeof questions === "string") {
-        questions = JSON.parse(questions);
+            questions = JSON.parse(questions);
         }
     
         renderQuestions(questions);
-    
-        // 🔥 Close modal after success
         closeAI();
     })
-    .catch(err => console.error(err))
+    .catch(console.error)
     .finally(() => {
         // 🔥 Reset button
         text.innerText = "Generate Questions";

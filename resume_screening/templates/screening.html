@@ -309,11 +309,16 @@
                 
                 const data = await response.json();
                 typingIndicator.classList.add('hidden');
-                
+                if (!response.ok) {
+                    addMessage(
+                        'bot',
+                        data.message || data.detail || data.error || "Something went wrong."
+                    );
+                    return;
+                }
                 if (data.session_id) {
                     sessionId = data.session_id;
                 }
-                
                 addMessage('bot', data.message);
                 
                 if (data.match_score !== undefined) {
