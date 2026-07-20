@@ -12,6 +12,16 @@ from openpyxl import Workbook
 from django.http import HttpResponse
 from datetime import datetime
 from django.db.models import Avg
+from django.conf import settings
+from django.contrib.auth.views import LoginView
+
+class CustomLoginView(LoginView):
+    template_name = "registration/login.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["TURNSTILE_SITE_KEY"] = settings.TURNSTILE_SITE_KEY
+        return context
 
 def information(request):
     return render(request, 'information.html')

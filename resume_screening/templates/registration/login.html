@@ -11,6 +11,7 @@
             darkMode: 'class',
         }
     </script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
         body {
             font-family: 'Outfit', sans-serif;
@@ -75,7 +76,7 @@
     
     <!-- Theme Toggle floating button -->
     <div class="fixed top-4 right-4 sm:top-6 sm:right-6 z-20">
-        <button id="themeToggle" class="p-2.5 sm:p-3 bg-white/70 dark:bg-slate-900/70 border border-slate-200/50 dark:border-slate-800/80 backdrop-blur-md rounded-2xl text-slate-655 dark:text-slate-350 hover:text-slate-955 dark:hover:text-slate-100 hover:shadow-md transition-all duration-200 cursor-pointer">
+        <button id="themeToggle" class="p-2.5 sm:p-3 bg-white/70 dark:bg-slate-900/70 border border-slate-200/50 dark:border-slate-800/80 backdrop-blur-md rounded-2xl text-slate-655 dark:text-slate-100 hover:text-slate-955 dark:hover:text-slate-50 hover:shadow-md transition-all duration-200 cursor-pointer">
             <!-- Sun Icon (visible in dark mode) -->
             <svg id="themeSun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M14 12a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             <!-- Moon Icon (visible in light mode) -->
@@ -135,6 +136,7 @@
                 </div>
             </div>
 
+            <div id="turnstile-widget" data-size="flexible"></div>
             <button type="submit" 
                 class="w-full py-3 sm:py-2.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 hover:from-blue-700 hover:to-indigo-700 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-blue-500/10 focus:outline-none focus:ring-4 focus:ring-blue-500/20 active:scale-[0.98] transition-all duration-200 text-sm cursor-pointer border-0">
                 Sign In
@@ -178,7 +180,24 @@
                 themeSun.classList.remove('hidden');
                 themeMoon.classList.add('hidden');
             }
+            renderTurnstile();
         });
+        
+        function renderTurnstile() {
+            const theme = document.documentElement.classList.contains("dark")
+                ? "dark"
+                : "light";
+        
+            document.getElementById("turnstile-widget").innerHTML = "";
+            turnstile.render("#turnstile-widget", {
+                sitekey: "{{ TURNSTILE_SITE_KEY }}",
+                theme: theme
+            });
+        }
+        window.onload = function () {
+            renderTurnstile();
+        };
+        
     </script>
 </body>
 </html>
